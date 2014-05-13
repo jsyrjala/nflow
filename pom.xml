@@ -157,6 +157,11 @@
             </dependency>
           </dependencies>
         </plugin>
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>0.32</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -445,4 +450,50 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <profiles>
+    <!-- Usage: mvn clean verify -P coverage-report -->
+    <profile>
+      <id>coverage-report</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>mutationCoverage</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <threads>4</threads>
+              <jvmArgs>
+                <arg>-ea</arg>
+              </jvmArgs>
+              <targetClasses>
+                <pattern>com.nitorcreations.nflow.engine.*</pattern>
+                <pattern>com.nitorcreations.nflow.rest.*</pattern>
+              </targetClasses>
+              <targetTests>
+                <pattern>com.nitorcreations.nflow.engine.*Test</pattern>
+                <pattern>com.nitorcreations.nflow.rest.*Test</pattern>
+              </targetTests>
+              <excludedClasses>
+                <pattern>com.nitorcreations.nflow.engine.dao.*</pattern>
+              </excludedClasses>
+              <failWhenNoMutations>false</failWhenNoMutations>
+              <timestampedReports>false</timestampedReports>
+              <mutators>
+                <mutator>ALL</mutator>
+              </mutators>
+              <mutateStaticInitializers>true</mutateStaticInitializers>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
